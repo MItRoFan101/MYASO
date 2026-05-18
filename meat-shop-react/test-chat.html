@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест чата</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+        }
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Тест чата</h1>
+    
+    <div class="test-section">
+        <h3>1. Проверка localStorage</h3>
+        <button onclick="checkLocalStorage()">Проверить localStorage</button>
+        <div id="localStorageResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Создать тестовый заказ</h3>
+        <button onclick="createTestOrder()">Создать заказ</button>
+        <div id="orderResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Создать тестового пользователя</h3>
+        <button onclick="createTestUser()">Создать пользователя</button>
+        <div id="userResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Отправить сообщение</h3>
+        <button onclick="sendMessage()">Отправить сообщение</button>
+        <div id="messageResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>5. Получить сообщения</h3>
+        <button onclick="getMessages()">Получить сообщения</button>
+        <div id="messagesResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>6. Очистить данные</h3>
+        <button onclick="clearData()">Очистить все данные</button>
+        <div id="clearResult" class="result"></div>
+    </div>
+
+    <script>
+        function logResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<span class="${isError ? 'error' : 'success'}">${message}</span>`;
+        }
+
+        function checkLocalStorage() {
+            const currentOrderId = localStorage.getItem('currentOrderId');
+            const currentUser = localStorage.getItem('currentUser');
+            const messages = localStorage.getItem('chat_messages');
+            
+            logResult('localStorageResult', 
+                `currentOrderId: ${currentOrderId || 'null'}\n` +
+                `currentUser: ${currentUser || 'null'}\n` +
+                `chat_messages: ${messages ? 'exists' : 'null'}`
+            );
+        }
+
+        function createTestOrder() {
+            const order = {
+                id: Date.now(),
+                customer: { 
+                    name: 'Тестовый клиент', 
+                    phone: '1234567890',
+                    address: 'Тестовый адрес',
+                    comment: 'Тестовый комментарий',
+                    deliveryType: 'pickup'
+                },
+                items: [],
+                total: 0
+            };
+            
+            localStorage.setItem('orders', JSON.stringify([order]));
+            localStorage.setItem('currentOrderId', order.id.toString());
+            
+            logResult('orderResult', `Order created: ${order.id}\nSaved to localStorage`);
+        }
+
+        function createTestUser() {
+            const user = {
+                id: 1,
+                name: 'Тестовый пользователь',
+                role: 'customer'
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            logResult('userResult', `User created: ${user.id}\nSaved to localStorage`);
+        }
+
+        function sendMessage() {
+            const orderId = localStorage.getItem('currentOrderId');
+            const userId = localStorage.getItem('currentUser');
+            
+            if (!orderId) {
+                logResult('messageResult', '❌ currentOrderId not found!', true);
+                return;
+            }
+            
+            if (!userId) {
+                logResult('messageResult', '❌ currentUser not found!', true);
+                return;
+            }
+            
+            const messages = JSON.parse(localStorage.getItem('chat_messages') || '[]');
+            
+            const newMessage = {
+                id: Date.now(),
+                orderId: parseInt(orderId),
+                senderId: parseInt(userId),
+                senderType: 'customer',
+                text: 'Тестовое сообщение',
+                mediaUrl: null,
+                mediaType: null,
+                createdAt: Date.now(),
+                isReadByAdmin: false
+            };
+            
+            messages.push(newMessage);
+            localStorage.setItem('chat_messages', JSON.stringify(messages));
+            
+            logResult('messageResult', `Message sent: ${newMessage.id}\nOrder: ${orderId}\nSender: ${userId}`);
+        }
+
+        function getMessages() {
+            const orderId = localStorage.getItem('currentOrderId');
+            
+            if (!orderId) {
+                logResult('messagesResult', '❌ currentOrderId not found!', true);
+                return;
+            }
+            
+            const messages = JSON.parse(localStorage.getItem('chat_messages') || '[]');
+            const orderMessages = messages.filter(msg => msg.orderId === parseInt(orderId));
+            
+            logResult('messagesResult', `Found ${orderMessages.length} messages for order ${orderId}:\n` + 
+                orderMessages.map(m => `- [${m.senderType}] ${m.text} (${new Date(m.createdAt).toLocaleTimeString()})`).join('\n')
+            );
+        }
+
+        function clearData() {
+            localStorage.removeItem('orders');
+            localStorage.removeItem('currentOrderId');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('chat_messages');
+            
+            logResult('clearResult', 'All data cleared!');
+        }
+    </script>
+</body>
+</html>

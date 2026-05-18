@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>О нас — Мясная лавка</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body, html {
+      margin: 0; padding: 0;
+      background-color: #FFFFFF;
+      color: #2C2C2C;
+      font-family: 'Montserrat', sans-serif;
+    }
+    h1, h2, h3, .top-bar, .product-card button, .checkout-btn { font-family: 'Dela Gothic One', sans-serif; }
+    .top-bar {
+      background-color: #000; color: #fff;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 20px; font-size: 16px;
+    }
+    .header {
+      height: 200px;
+      background: url('header-bg.jpg') center/cover no-repeat;
+      position: relative;
+    }
+    .header::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.3);
+    }
+    .content { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    .section { margin-bottom: 50px; }
+    .section h2 { color: #2C2C2C; margin-bottom: 20px; }
+    .section p { line-height: 1.8; color: #6B6B6B; }
+    .certificates { display: flex; gap: 20px; flex-wrap: wrap; }
+    .cert-card {
+      background: #FFF5F5; border-radius: 12px; padding: 20px;
+      text-align: center; width: 200px;
+      border: 1px solid rgba(231, 76, 60, 0.2);
+    }
+    .cert-card img { width: 100%; height: auto; border-radius: 8px; }
+    .site-footer {
+      margin-top: 60px; padding: 40px 20px;
+      border-top: 1px solid #eee; text-align: center;
+    }
+    /* кнопка наверх */
+    #scrollToTop {
+      position: fixed; bottom: 30px; right: 30px; z-index: 99999;
+      background: #000; color: #fff; border: none; border-radius: 50%;
+      width: 50px; height: 50px; font-size: 24px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <span>🍖 Мясная лавка</span>
+    <a href="index.html" style="color:white; text-decoration:none; margin-right:15px;">Главная</a>
+    <a href="index.html#products" style="color:white; text-decoration:none; margin-right:15px;">Продукция</a>
+    <a href="index.html#stores" style="color:white; text-decoration:none; margin-right:15px;">Магазины</a>
+    <span>
+      📞 +7 (908) 130-77-66
+      <span style="margin-left:20px; cursor:pointer;" id="cart-icon">🛒 <span id="cart-count">0</span></span>
+    </span>
+  </div>
+  <header class="header"></header>
+
+  <div class="content">
+    <div class="section">
+      <h2>О нашем производстве</h2>
+      <p>«Мясная лавка» — это семейное предприятие с многолетней историей. Мы используем только охлаждённое мясо от проверенных фермеров Краснодарского края. Никакой заморозки, только натуральный вкус. Все продукты проходят строгий контроль качества на каждом этапе: от приёмки сырья до упаковки готовой продукции.</p>
+      <p>Наши мастера вручную разделывают туши, готовят фарш для пельменей и маринуют шашлык по фирменным рецептам. Мы гордимся тем, что можем предложить вам настоящее мясо без компромиссов.</p>
+    </div>
+    <div class="section">
+      <h2>Гарантии качества</h2>
+      <p>✅ Только фермерское мясо — никаких промышленных добавок.</p>
+      <p>✅ Ежедневный контроль свежести — продукция хранится при строгом температурном режиме.</p>
+      <p>✅ Сертификаты соответствия — всё мясо проходит ветеринарный надзор.</p>
+      <p>✅ Возврат и обмен в течение 24 часов, если качество не устроило.</p>
+    </div>
+    <div class="section">
+      <h2>Наши сертификаты</h2>
+      <div class="certificates">
+        <div class="cert-card">
+          <img src="https://placehold.co/200x280?text=Сертификат+качества" alt="Сертификат качества">
+          <p>Сертификат качества</p>
+        </div>
+        <div class="cert-card">
+          <img src="https://placehold.co/200x280?text=Ветеринарное+свидетельство" alt="Ветеринарное свидетельство">
+          <p>Ветеринарное свидетельство</p>
+        </div>
+        <div class="cert-card">
+          <img src="https://placehold.co/200x280?text=Декларация+соответствия" alt="Декларация соответствия">
+          <p>Декларация соответствия</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>© 2026 Мясная лавка. Все права защищены.</p>
+    <p style="opacity:0.7; font-size:14px;">Свежее мясо. Натуральный вкус. Каждый день.</p>
+  </footer>
+
+  <!-- Кнопка наверх + корзина (базовая) -->
+  <script>
+    // Корзина (упрощённая, чтобы иконка работала)
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    function updateCartCount() {
+      document.getElementById('cart-count').textContent = cart.length;
+    }
+    updateCartCount();
+    document.getElementById('cart-icon').addEventListener('click', () => {
+      window.location.href = 'index.html'; // возврат на главную, где откроется корзина
+    });
+
+    // Кнопка наверх
+    (function() {
+      if (document.getElementById('scrollToTop')) return;
+      const btn = document.createElement('button');
+      btn.id = 'scrollToTop';
+      btn.innerHTML = '↑';
+      Object.assign(btn.style, {
+        position: 'fixed', bottom: '30px', right: '30px', zIndex: 99999,
+        backgroundColor: '#000', color: '#fff', border: 'none', borderRadius: '50%',
+        width: '50px', height: '50px', fontSize: '24px', cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        opacity: '0', transition: 'opacity 0.3s', boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+      });
+      window.addEventListener('scroll', () => {
+        btn.style.opacity = window.scrollY > 500 ? '1' : '0';
+      });
+      btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      document.body.appendChild(btn);
+    })();
+  </script>
+</body>
+</html>

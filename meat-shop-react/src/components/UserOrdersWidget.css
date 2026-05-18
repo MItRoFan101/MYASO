@@ -1,0 +1,674 @@
+.user-orders-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 360px;
+  max-height: 18vh;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease-out;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  transition: all 0.2s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Шапка виджета — компактная, но удобная для чтения */
+.widget-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.widget-header h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.widget-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.orders-count {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
+  border-radius: 40px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  backdrop-filter: blur(2px);
+}
+
+.collapse-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.02);
+}
+
+.collapse-btn:active {
+  transform: scale(0.96);
+}
+
+/* ========== МИНИ-ВЕРСИЯ (СВЁРНУТЫЙ ВИДЖЕТ) ========== */
+.user-orders-widget.collapsed {
+  width: auto;
+  min-width: 150px;
+  max-width: 220px;
+  border-radius: 100px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(0);
+}
+
+.user-orders-widget.collapsed .widget-header {
+  padding: 6px 14px;
+  border-radius: 100px;
+  gap: 10px;
+}
+
+.user-orders-widget.collapsed .widget-header h2 {
+  font-size: 13px;
+  max-width: 110px;
+  font-weight: 500;
+}
+
+.user-orders-widget.collapsed .orders-count {
+  font-size: 12px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.user-orders-widget.collapsed .collapse-btn {
+  width: 26px;
+  height: 26px;
+  font-size: 13px;
+}
+
+.user-orders-widget.collapsed .orders-list {
+  display: none;
+}
+
+/* Список заказов — компактная прокрутка */
+.orders-list {
+  max-height: 280px;
+  overflow-y: auto;
+  background: white;
+}
+
+.order-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid #edf2f7;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.order-item:hover {
+  background: #f8fafc;
+}
+
+.order-item.selected {
+  background: #eef2ff;
+  border-left: 3px solid #667eea;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.order-number {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1e293b;
+  letter-spacing: -0.2px;
+}
+
+.order-status {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 40px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: #e2e8f0;
+  color: #1e293b;
+  box-shadow: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+/* Цветные статусы — улучшенная читаемость */
+.order-status.order-pending {
+  background: #fef3c7;
+  color: #b45309;
+  box-shadow: none;
+}
+
+.order-status.order-pending:hover {
+  transform: translateY(-1px);
+  background: #fde68a;
+}
+
+.order-status.order-completed {
+  background: #e0f2e9;
+  color: #166534;
+  box-shadow: none;
+}
+
+.order-status.order-completed:hover {
+  background: #bbf7d0;
+  transform: translateY(-1px);
+}
+
+.order-status.order-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+  box-shadow: none;
+}
+
+.order-status.order-cancelled:hover {
+  background: #fecaca;
+  transform: translateY(-1px);
+}
+
+/* Загрузка, ошибка, пустое состояние */
+.loading-container,
+.empty-orders,
+.error-message {
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+
+.loading-container p,
+.empty-orders p {
+  color: #475569;
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+.error-message {
+  color: #dc2626;
+  background: #fef2f2;
+  font-weight: 500;
+}
+
+/* Модальное окно заказа */
+.order-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+  padding: 20px;
+}
+
+.order-modal {
+  background: white;
+  border-radius: 24px;
+  max-width: 720px;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.close-modal-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.close-modal-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.modal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: #ffffff;
+}
+
+/* Детали заказа в модалке */
+.order-details h3,
+.contact-section h3,
+.items-section h3,
+.chat-section h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 14px 0;
+  color: #0f172a;
+}
+
+.order-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.order-info-item {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 18px;
+}
+
+.info-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #5b6e8c;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.info-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.info-value.total-price {
+  color: #667eea;
+  font-size: 18px;
+}
+
+/* Контакты */
+.contact-info {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 20px;
+}
+
+.contact-item {
+  margin-bottom: 12px;
+}
+
+.contact-label {
+  font-size: 11px;
+  color: #5b6e8c;
+  display: block;
+}
+
+.contact-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+/* Список товаров */
+.items-list {
+  background: #f8fafc;
+  border-radius: 20px;
+  padding: 8px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-radius: 18px;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.item-info h3 {
+  font-size: 14px;
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+.item-info p {
+  font-size: 12px;
+  color: #475569;
+  margin: 2px 0;
+}
+
+.item-total {
+  font-weight: 700;
+  color: #667eea;
+  font-size: 15px;
+}
+
+/* Чат (компактный) */
+.chat-messages {
+  background: #f8fafc;
+  border-radius: 20px;
+  padding: 12px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.message {
+  margin-bottom: 16px;
+  max-width: 85%;
+}
+
+.message.admin {
+  margin-left: auto;
+}
+
+.message-header {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.sender-name {
+  font-weight: 700;
+  font-size: 11px;
+  color: #334155;
+}
+
+.message-time {
+  font-size: 9px;
+  color: #94a3b8;
+}
+
+.message-text {
+  background: white;
+  padding: 8px 14px;
+  border-radius: 22px;
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.message.admin .message-text {
+  background: #667eea;
+  color: white;
+}
+
+/* Медиа-вложения */
+.message-media {
+  margin-top: 6px;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.message-media img {
+  max-height: 220px;
+  width: auto;
+  cursor: pointer;
+  border-radius: 16px;
+}
+
+/* Форма ввода чата */
+.chat-input-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.input-group {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 40px;
+  font-size: 13px;
+  background: white;
+  transition: 0.2s;
+}
+
+.input-group input:focus {
+  border-color: #667eea;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(102,126,234,0.2);
+}
+
+.send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.send-btn:hover:not(:disabled) {
+  transform: scale(1.04);
+  box-shadow: 0 4px 10px rgba(102,126,234,0.4);
+}
+
+/* Скроллбары */
+.orders-list::-webkit-scrollbar,
+.chat-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.orders-list::-webkit-scrollbar-track,
+.chat-messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.orders-list::-webkit-scrollbar-thumb,
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+
+/* ========== АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ ========== */
+@media (max-width: 768px) {
+  .user-orders-widget {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-height: 50vh;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .widget-header {
+    padding: 10px 16px;
+  }
+
+  .widget-header h2 {
+    font-size: 15px;
+  }
+
+  .orders-count {
+    font-size: 13px;
+    padding: 4px 10px;
+  }
+
+  .collapse-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Мини-версия на мобильном — внизу по центру или как маленький шар */
+  .user-orders-widget.collapsed {
+    left: auto;
+    right: 16px;
+    bottom: 16px;
+    min-width: 130px;
+    max-width: 180px;
+    border-radius: 60px;
+  }
+
+  .user-orders-widget.collapsed .widget-header {
+    padding: 8px 14px;
+  }
+
+  .user-orders-widget.collapsed .widget-header h2 {
+    font-size: 13px;
+  }
+
+  .order-number {
+    font-size: 12px;
+  }
+
+  .order-status {
+    font-size: 9px;
+    padding: 3px 8px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .order-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-messages {
+    max-height: 200px;
+  }
+
+  .message {
+    max-width: 92%;
+  }
+
+  .message-text {
+    font-size: 12px;
+  }
+
+  .item-info h3 {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-orders-widget.collapsed {
+    min-width: 120px;
+    max-width: 160px;
+  }
+
+  .user-orders-widget.collapsed .widget-header h2 {
+    font-size: 12px;
+    max-width: 80px;
+  }
+
+  .orders-count {
+    font-size: 11px;
+    padding: 2px 7px;
+  }
+
+  .order-item {
+    padding: 8px 10px;
+  }
+
+  .chat-messages {
+    max-height: 170px;
+  }
+
+  .message-media img {
+    max-height: 150px;
+  }
+}
+
+/* Улучшение кликабельности */
+.send-btn,
+.collapse-btn,
+.order-item,
+.close-modal-btn {
+  cursor: pointer;
+  user-select: none;
+}

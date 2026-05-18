@@ -1,0 +1,544 @@
+/* === АДМИН-ПАНЕЛЬ === */
+.admin-panel {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #f5f5f5;
+  z-index: 10000;
+  overflow-y: auto;
+}
+
+/* === ВХОД === */
+.admin-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-box {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.login-box h2 { margin-bottom: 10px; color: #2C2C2C; }
+.login-box p { color: #6B6B6B; margin-bottom: 20px; }
+.login-box input {
+  width: 100%; padding: 12px; margin-bottom: 15px;
+  border: 2px solid #ddd; border-radius: 8px;
+  font-size: 16px; box-sizing: border-box;
+}
+.login-box button {
+  width: 100%; padding: 12px;
+  background: #E74C3C; color: white;
+  border: none; border-radius: 8px;
+  font-size: 16px; cursor: pointer;
+  font-weight: 600;
+}
+
+/* === HEADER === */
+.admin-header {
+  background: #2C2C2C;
+  color: white;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.admin-header h2 { margin: 0; }
+.logout-btn {
+  background: #E74C3C; color: white;
+  border: none; padding: 8px 20px;
+  border-radius: 6px; cursor: pointer;
+  font-weight: 600;
+}
+
+/* === TABS === */
+.admin-tabs {
+  display: flex;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  padding: 0 30px;
+}
+
+.tab {
+  padding: 15px 30px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6B6B6B;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+
+.tab:hover { color: #E74C3C; }
+.tab.active {
+  color: #E74C3C;
+  border-bottom-color: #E74C3C;
+}
+
+/* === CONTENT === */
+.admin-content {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+  .admin-content h3 { margin-bottom: 20px; color: #2C2C2C; }
+
+  .orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .orders-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .orders-actions button {
+    min-width: 100px;
+  }
+
+  .export-btn {
+    padding: 12px 24px;
+    border: 2px solid;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 15px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .export-btn:active {
+    transform: translateY(0);
+  }
+
+  .export-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .excel-btn {
+    background: #217346;
+    color: white;
+  }
+
+  .excel-btn:hover {
+    background: #1a5c3a;
+    box-shadow: 0 4px 12px rgba(33, 115, 70, 0.4);
+  }
+
+  .word-btn {
+    background: #2b579a;
+    color: white;
+  }
+
+  .word-btn:hover {
+    background: #1e3d6b;
+    box-shadow: 0 4px 12px rgba(43, 87, 154, 0.4);
+  }
+
+  .pdf-btn {
+    background: #dc3545;
+    color: white;
+  }
+
+  .pdf-btn:hover {
+    background: #b02a37;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+  }
+
+  /* Импорт кнопки */
+  .import-btn {
+    padding: 12px 24px;
+    border: 2px solid;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 15px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    background: white;
+    color: #2C2C2C;
+  }
+
+  .import-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .import-btn:active {
+    transform: translateY(0);
+  }
+
+  .import-btn.excel-btn {
+    border-color: #217346;
+    color: #217346;
+  }
+
+  .import-btn.excel-btn:hover {
+    background: #217346;
+    color: white;
+    box-shadow: 0 4px 12px rgba(33, 115, 70, 0.4);
+  }
+
+  .import-btn.word-btn {
+    border-color: #2b579a;
+    color: #2b579a;
+  }
+
+  .import-btn.word-btn:hover {
+    background: #2b579a;
+    color: white;
+    box-shadow: 0 4px 12px rgba(43, 87, 154, 0.4);
+  }
+
+  .import-btn.pdf-btn {
+    border-color: #dc3545;
+    color: #dc3545;
+  }
+
+  .import-btn.pdf-btn:hover {
+    background: #dc3545;
+    color: white;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+  }
+
+  .refresh-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+
+  .refresh-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+  }
+
+  .refresh-btn:active {
+    transform: translateY(0);
+  }
+
+/* === ФОРМА ДОБАВЛЕНИЯ === */
+.product-form {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.product-form h3 { margin-top: 0; }
+
+.product-form input {
+  width: 100%; padding: 12px;
+  border: 2px solid #ddd; border-radius: 8px;
+  margin-bottom: 15px; font-size: 14px; box-sizing: border-box;
+}
+
+.product-form button {
+  background: #E74C3C; color: white;
+  border: none; padding: 12px 30px;
+  border-radius: 8px; cursor: pointer;
+  font-weight: 600; font-size: 14px;
+}
+
+/* === СПИСОК ТОВАРОВ === */
+.products-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.product-item {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.product-info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.product-info img {
+  width: 80px; height: 80px;
+  object-fit: cover; border-radius: 8px;
+}
+
+.product-info h4 { margin: 0; color: #2C2C2C; }
+.product-info p { margin: 5px 0 0; color: #E74C3C; font-weight: 600; }
+
+.product-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.product-actions button {
+  flex: 1; padding: 8px;
+  border: none; border-radius: 6px;
+  cursor: pointer; font-size: 13px;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-buttons button {
+  flex: 1; padding: 8px;
+  border: none; border-radius: 6px;
+  cursor: pointer; font-size: 13px;
+}
+
+.delete-btn { background: #e74c3c; color: white; }
+
+/* === СПИСОК ЗАКАЗОВ === */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.order-item {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.order-header span:first-child { font-weight: 600; color: #2C2C2C; }
+
+.status {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.pending { background: #FFF3CD; color: #856404; }
+.status.completed { background: #D4EDDA; color: #155724; }
+.status.cancelled { background: #F8D7DA; color: #721C24; }
+
+.order-info p { margin: 8px 0; color: #6B6B6B; font-size: 14px; }
+.order-info strong { color: #2C2C2C; }
+
+.order-items {
+  margin: 15px 0;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.order-items h4 { margin: 0 0 10px; color: #2C2C2C; font-size: 14px; }
+
+.order-item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.order-item-row:last-child { border-bottom: none; }
+
+.order-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.order-actions button {
+  flex: 1; padding: 10px;
+  border: none; border-radius: 6px;
+  cursor: pointer; font-weight: 600; font-size: 13px;
+}
+
+.complete-btn { background: #28a745; color: white; }
+.cancel-btn { background: #dc3545; color: white; }
+
+/* === МОДАЛЬНОЕ ОКНО === */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 { margin: 0; }
+.modal-header button {
+  background: none; border: none;
+  font-size: 24px; cursor: pointer;
+}
+
+.modal-body { padding: 20px; }
+
+.order-details p { margin: 10px 0; color: #6B6B6B; }
+.order-details strong { color: #2C2C2C; }
+
+.modal-footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  text-align: right;
+}
+
+.modal-footer button {
+  background: #E74C3C; color: white;
+  border: none; padding: 10px 30px;
+  border-radius: 6px; cursor: pointer;
+}
+
+/* Кнопка открытия чата */
+.open-chat-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+}
+
+.open-chat-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Модальное окно чата */
+.chat-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.chat-modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.chat-modal-header {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.chat-modal-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 8px;
+  transition: transform 0.2s;
+}
+
+.chat-modal-close:hover {
+  transform: scale(1.1);
+}
+
+.chat-modal-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-modal-body .order-chat {
+  height: 100%;
+  border-radius: 0 0 12px 12px;
+}
