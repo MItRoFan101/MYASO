@@ -10,7 +10,7 @@ import Order from './pages/Order';
 import CookieStatus from './components/CookieStatus';
 import UserOrdersWidget from './components/UserOrdersWidget';
 import './App.css';
-import About from './components/About';
+import AboutPage from './components/AboutPage';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -144,7 +144,7 @@ function App() {
         <Route path="/" element={<AppContent />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/order/:id" element={<Order />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/about" element={<AboutPage />} />
       </Routes>
     </Router>
   );
