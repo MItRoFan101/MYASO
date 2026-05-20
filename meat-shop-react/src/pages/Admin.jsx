@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getProducts, addProduct, updateProduct, deleteProduct, getOrders, updateOrderStatus, getNews, addNews, updateNews, deleteNews, getOrdersWithChats } from '../utils/db';
+import { fetchProducts, createProduct, updateProduct as updateProductAPI, deleteProduct as deleteProductAPI } from '../utils/api';
 import { verifyPassword, endSession } from '../utils/security';
 import { fetchOrders, fetchMessages, sendMessage, deleteOrder } from '../utils/api';
 import { exportToExcel, exportToWord, exportToPDF, importFromExcel, importFromWord, importFromPDF } from '../utils/export';
@@ -67,13 +68,21 @@ const Admin = () => {
         return;
       }
       
-      const products = getProducts();
-      const orders = getOrders();
-      console.log('Загруженные товары:', products);
-      console.log('Загруженные заказы:', orders);
-      console.log('Количество товаров:', products.length);
+      // Загружаем товары с сервера
+      const loadProducts = async () => {
+        try {
+          const products = await fetchProducts();
+          console.log('Загруженные товары:', products);
+          setProducts(products);
+        } catch (error) {
+          console.error('Error loading products:', error);
+        }
+      };
       
-      setProducts(products);
+      loadProducts();
+      
+      const orders = getOrders();
+      console.log('Загруженные заказы:', orders);
       setOrders(orders);
       setIsLoaded(true);
       hasLoadedRef.current = true;
@@ -82,6 +91,22 @@ const Admin = () => {
       localStorage.removeItem('admin_session');
       return;
     }
+  }, []);
+
+  // Синхронизация с сайтом при изменении товаров
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'products') {
+        // Перезагружаем товары с сервера для синхронизации
+        fetchProducts().then(products => {
+          setProducts(products);
+          console.log('Обновлены товары с сервера:', products);
+        });
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // Обновление данных при изменении сессии (только один раз после загрузки)
@@ -129,22 +154,27 @@ const Admin = () => {
     }
   };
 
-  const handleAddProduct = (e) => {
+  const handleAddProduct = async (e) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.price) return;
 
-    const product = {
-      id: Date.now(),
-      name: newProduct.name,
-      price: parseInt(newProduct.price),
-      image: imagePreview || 'beef.jpg',
-      weightOptions: newProduct.weightOptions
-    };
+    try {
+      const product = {
+        name: newProduct.name,
+        price: parseInt(newProduct.price),
+        image: imagePreview || 'beef.jpg',
+        weightOptions: newProduct.weightOptions
+      };
 
-    addProduct(product);
-    setProducts(getProducts());
-    setNewProduct({ name: '', price: '', image: '', weightOptions: [100, 200, 300, 500, 1000] });
-    setImagePreview(null);
+      await createProduct(product);
+      const products = await fetchProducts();
+      setProducts(products);
+      setNewProduct({ name: '', price: '', image: '', weightOptions: [100, 200, 300, 500, 1000] });
+      setImagePreview(null);
+    } catch (error) {
+      console.error('Error adding product:', error);
+      alert('Ошибка при добавлении товара');
+    }
   };
 
   const handleEditProduct = (product) => {
@@ -153,27 +183,39 @@ const Admin = () => {
     setImagePreview(null);
   };
 
-  const handleUpdateProduct = (e) => {
+  const handleUpdateProduct = async (e) => {
     e.preventDefault();
     if (!editingProduct) return;
 
-    updateProduct(editingProduct.id, {
-      name: editingProduct.name,
-      price: parseInt(editingProduct.price),
-      image: imagePreview || editingProduct.image,
-      weightOptions: editingProduct.weightOptions || [100, 200, 300, 500, 1000]
-    });
+    try {
+      await updateProductAPI(editingProduct.id, {
+        name: editingProduct.name,
+        price: parseInt(editingProduct.price),
+        image: imagePreview || editingProduct.image,
+        weightOptions: editingProduct.weightOptions || [100, 200, 300, 500, 1000]
+      });
 
-    setProducts(getProducts());
-    setIsEditing(false);
-    setEditingProduct(null);
-    setImagePreview(null);
+      const products = await fetchProducts();
+      setProducts(products);
+      setIsEditing(false);
+      setEditingProduct(null);
+      setImagePreview(null);
+    } catch (error) {
+      console.error('Error updating product:', error);
+      alert('Ошибка при обновлении товара');
+    }
   };
 
-  const handleDeleteProduct = (id) => {
+  const handleDeleteProduct = async (id) => {
     if (window.confirm('Удалить этот товар?')) {
-      deleteProduct(id);
-      setProducts(getProducts());
+      try {
+        await deleteProductAPI(id);
+        const products = await fetchProducts();
+        setProducts(products);
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        alert('Ошибка при удалении товара');
+      }
     }
   };
 
@@ -704,52 +746,6 @@ const Admin = () => {
             )}
           </div>
           
-          {/* === ВЫБОР ВЕСОВЫХ ОПЦИЙ ДЛЯ НОВОГО ТОВАРА === */}
-          <div className="weight-options-section">
-            <h4>⚖️ Весовые опции (граммы)</h4>
-            <p className="hint">Выберите доступные веса для этого товара</p>
-            <div className="weight-options-grid">
-              {newProduct.weightOptions && newProduct.weightOptions.length > 0 ? (
-                newProduct.weightOptions.map((weight, index) => (
-                  <div key={index} className="weight-option-item">
-                    <input
-                      type="number"
-                      value={weight}
-                      onChange={(e) => {
-                        const newOptions = [...newProduct.weightOptions];
-                        newOptions[index] = parseInt(e.target.value) || 0;
-                        setNewProduct({ ...newProduct, weightOptions: newOptions });
-                      }}
-                      min="1"
-                    />
-                    <button 
-                      type="button" 
-                      onClick={() => {
-                        const newOptions = newProduct.weightOptions.filter((_, i) => i !== index);
-                        setNewProduct({ ...newProduct, weightOptions: newOptions });
-                      }}
-                      className="remove-weight-btn"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))
-              ) : (
-                <p className="no-weights">Нет добавленных весов</p>
-              )}
-              <button 
-                type="button" 
-                onClick={() => {
-                  const newOptions = [...newProduct.weightOptions, 100];
-                  setNewProduct({ ...newProduct, weightOptions: newOptions });
-                }}
-                className="add-weight-btn"
-              >
-                + Добавить вес
-              </button>
-            </div>
-          </div>
-
           {/* Список новостей */}
           <div className="news-list">
             {news.length === 0 ? (

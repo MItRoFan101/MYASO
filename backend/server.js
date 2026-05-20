@@ -56,6 +56,12 @@ const upload = multer({
 // In-memory data storage
 let orders = [];
 let messages = [];
+let products = [
+  { id: 1, name: 'Говядина премиум', price: 1200, image: 'beef.jpg', weightOptions: [100, 200, 300, 500, 1000] },
+  { id: 2, name: 'Свинина на кости', price: 800, image: 'pork.jpg', weightOptions: [100, 200, 300, 500, 1000] },
+  { id: 3, name: 'Баранина каре', price: 950, image: 'lamb.jpg', weightOptions: [100, 200, 300, 500, 1000] },
+  { id: 4, name: 'Куриное филе', price: 450, image: 'chicken.jpg', weightOptions: [100, 200, 300, 500, 1000] }
+];
 
 // Socket.io connection
 io.on('connection', (socket) => {
@@ -178,6 +184,51 @@ app.post('/api/orders/:orderId/messages', upload.single('file'), (req, res) => {
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Products API
+app.get('/api/products', (req, res) => {
+  res.json(products);
+});
+
+app.get('/api/products/:id', (req, res) => {
+  const product = products.find(p => p.id === parseInt(req.params.id));
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404).json({ error: 'Товар не найден' });
+  }
+});
+
+app.post('/api/products', (req, res) => {
+  const product = {
+    id: Date.now(),
+    ...req.body
+  };
+  products.push(product);
+  res.status(201).json(product);
+});
+
+app.put('/api/products/:id', (req, res) => {
+  const productId = parseInt(req.params.id);
+  const productIndex = products.findIndex(p => p.id === productId);
+  if (productIndex !== -1) {
+    products[productIndex] = { ...products[productIndex], ...req.body };
+    res.json(products[productIndex]);
+  } else {
+    res.status(404).json({ error: 'Товар не найден' });
+  }
+});
+
+app.delete('/api/products/:id', (req, res) => {
+  const productId = parseInt(req.params.id);
+  const productIndex = products.findIndex(p => p.id === productId);
+  if (productIndex !== -1) {
+    products.splice(productIndex, 1);
+    res.json({ message: 'Товар удален' });
+  } else {
+    res.status(404).json({ error: 'Товар не найден' });
+  }
 });
 
 // Start server

@@ -25,10 +25,13 @@
   background: white;
   border-radius: 16px;
   width: 90%;
-  max-width: 450px;
+  max-width: 500px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
 }
 
 @keyframes slideUp {
@@ -79,6 +82,8 @@
 
 .weight-modal-body {
   padding: 24px;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .product-preview {
@@ -147,6 +152,52 @@
   font-size: 0.9rem;
   color: #666;
   border-left: 4px solid #667eea;
+}
+
+.weight-options-buttons {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.weight-options-buttons .hint {
+  margin: 0 0 12px 0;
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.weight-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.weight-option-btn {
+  padding: 12px 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #667eea;
+  background: white;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.weight-option-btn:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.weight-option-btn.selected {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .price-calculation {

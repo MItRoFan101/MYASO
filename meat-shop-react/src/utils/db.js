@@ -1,13 +1,26 @@
 // === БАЗА ДАННЫХ ===
 
 // Товары
-export const getProducts = () => {
+export const getProducts = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/products');
+    if (response.ok) {
+      const products = await response.json();
+      // Сохраняем в localStorage для кэширования
+      localStorage.setItem('products', JSON.stringify(products));
+      return products;
+    }
+  } catch (error) {
+    console.error('Error fetching products from server:', error);
+  }
+  
+  // Fallback to localStorage
   const products = localStorage.getItem('products');
   return products ? JSON.parse(products) : [
-    { id: 1, name: 'Говядина премиум', price: 1200, image: 'beef.jpg' },
-    { id: 2, name: 'Свинина на кости', price: 800, image: 'pork.jpg' },
-    { id: 3, name: 'Баранина каре', price: 950, image: 'lamb.jpg' },
-    { id: 4, name: 'Куриное филе', price: 450, image: 'chicken.jpg' },
+    { id: 1, name: 'Говядина премиум', price: 1200, image: 'beef.jpg', weightOptions: [100, 200, 300, 500, 1000] },
+    { id: 2, name: 'Свинина на кости', price: 800, image: 'pork.jpg', weightOptions: [100, 200, 300, 500, 1000] },
+    { id: 3, name: 'Баранина каре', price: 950, image: 'lamb.jpg', weightOptions: [100, 200, 300, 500, 1000] },
+    { id: 4, name: 'Куриное филе', price: 450, image: 'chicken.jpg', weightOptions: [100, 200, 300, 500, 1000] },
   ];
 };
 

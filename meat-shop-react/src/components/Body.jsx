@@ -6,27 +6,27 @@ import UserOrdersWidget from './UserOrdersWidget';
 import WeightSelectionModal from './WeightSelectionModal';
 import './Body.css';
 
-const stores = [
+  const stores = [
   {
-    name: 'Южный рынок',
+    name: 'Западный рынок',
     address: 'напротив лавки «Сладкая жизнь»',
     hours: '🕒 Ежедневно: 08:00 – 18:00 (без обеда и выходных)',
     phone: '',
-    mapLink: '#',
+    mapLink: 'https://yandex.ru/maps/?pt=39.478332,50.989345&z=18',
   },
   {
-    name: 'Советская, 5',
+    name: 'Советская, 105',
     address: 'напротив магазина «СВЕТОФОР»',
     hours: '🕒 Ежедневно: 08:00 – 18:00 (без обеда и выходных)',
     phone: '',
-    mapLink: '#',
+    mapLink: 'https://yandex.ru/maps/?pt=39.484820,50.978341&z=18',
   },
   {
     name: 'ул. 40 лет Октября, 21А',
     address: 'в ассортименте: свежая рыба',
     hours: '🕒 Ежедневно: 08:00 – 18:00 (без обеда и выходных)',
     phone: '',
-    mapLink: '#',
+    mapLink: 'https://yandex.ru/maps/?pt=39.537199,50.975831&z=18',
     fishIcon: true,
   },
 ];
@@ -43,7 +43,11 @@ const Body = ({ onAddToCart }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    setProducts(getProducts());
+    const loadProducts = async () => {
+      const products = await getProducts();
+      setProducts(products);
+    };
+    loadProducts();
   }, []);
 
   useEffect(() => {
@@ -51,6 +55,21 @@ const Body = ({ onAddToCart }) => {
     if (savedCart) {
       setCartItems(JSON.parse(savedCart));
     }
+  }, []);
+
+  // Синхронизация корзины между вкладками
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'cart') {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+          setCartItems(JSON.parse(savedCart));
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // Получаем текущего пользователя из localStorage
@@ -153,7 +172,7 @@ const Body = ({ onAddToCart }) => {
               <p>{store.address}{store.fishIcon && <span style={{ marginLeft: '8px' }}>🐟 Свежая рыба</span>}</p>
               <p>{store.hours}</p>
               {store.phone && <p>{store.phone}</p>}
-              <a href={store.mapLink} className="store-map-btn" onClick={(e) => e.preventDefault()}>На карте</a>
+              <a href={store.mapLink} className="store-map-btn">На карте</a>
             </div>
           ))}
         </div>

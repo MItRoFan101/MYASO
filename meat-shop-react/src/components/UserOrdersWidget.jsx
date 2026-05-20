@@ -99,7 +99,7 @@ const UserOrdersWidget = ({ currentUserId, isOpen: externalIsOpen, onOpenChange:
 
   if (error) {
     return (
-      <div className="user-orders-widget">
+      <div className={`user-orders-widget ${orders.length > 0 ? 'expanded' : ''}`}>
         <div className="widget-header">
           <h2>📋 Мои заказы</h2>
         </div>

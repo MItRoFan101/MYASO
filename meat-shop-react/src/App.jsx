@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from
 import Header from './components/Header';
 import Body from './components/Body';
 import Footer from './components/Footer';
-import ScrollToTopButton from './components/ScrollToTopButton';
 import CartModal from './components/CartModal';
 import Login from './components/Login';
 import Admin from './pages/Admin';
@@ -26,6 +25,25 @@ function AppContent() {
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
+  // Синхронизация корзины между вкладками
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'cart') {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+          const newCart = JSON.parse(savedCart);
+          // Обновляем только если корзина изменилась
+          if (JSON.stringify(newCart) !== JSON.stringify(cart)) {
+            setCart(newCart);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, [cart]);
 
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -111,7 +129,7 @@ function AppContent() {
       </div>
 
       {/* === КНОПКА НАВЕРХ (розмарин + стрелка) === */}
-      <ScrollToTopButton />
+    
 
       {/* === КОНТРОЛЬ COOKIES === */}
       <CookieStatus />

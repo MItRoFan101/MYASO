@@ -179,3 +179,58 @@ export const fetchUserOrders = async (userId) => {
     return [];
   }
 };
+
+// Products API
+export const fetchProducts = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products`);
+    return await handleResponse(response);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
+};
+
+export const createProduct = async (product) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(product),
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error('Error creating product:', error);
+    throw error;
+  }
+};
+
+export const updateProduct = async (id, product) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(product),
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error('Error updating product:', error);
+    throw error;
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: 'DELETE',
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    throw error;
+  }
+};

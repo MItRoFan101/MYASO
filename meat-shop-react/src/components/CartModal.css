@@ -29,6 +29,11 @@
   margin-bottom: 20px;
 }
 
+.cart-header h2 {
+  color: #000;
+  margin: 0;
+}
+
 .cart-close { background: none; border: none; font-size: 24px; cursor: pointer; }
 
 .cart-items { min-height: 100px; }
@@ -83,6 +88,8 @@
   border: 1px solid #ccc; border-radius: 6px;
   font-family: 'Open Sans', sans-serif; font-size: 14px;
   box-sizing: border-box;
+  background: #fff;
+  color: #000;
 }
 
 .checkout-form textarea { resize: none; }

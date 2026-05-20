@@ -171,17 +171,17 @@ const CartModal = ({ isOpen, onClose, cart, onAddToCart, onUpdateCart, navigate 
           {cart.length === 0 ? (
             <p>Корзина пуста</p>
           ) : (
-            cart.map((item, index) => (
-              <div key={index} className="cart-item">
-                <span>{item.name} премиум — {item.price * item.quantity} ₽</span>
-                <div className="quantity-controls">
-                  <button onClick={() => handleQuantityChange(index, -1)}>-</button>
-                  <span>{item.quantity}</span>
-                  <button onClick={() => handleQuantityChange(index, 1)}>+</button>
+              cart.map((item, index) => (
+                <div key={index} className="cart-item">
+                  <span>{item.name} — {item.weight} г — {item.price * item.quantity} ₽</span>
+                  <div className="quantity-controls">
+                    <button onClick={() => handleQuantityChange(index, -1)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => handleQuantityChange(index, 1)}>+</button>
+                  </div>
+                  <button onClick={() => handleRemoveFromCart(index)}>Удалить</button>
                 </div>
-                <button onClick={() => handleRemoveFromCart(index)}>Удалить</button>
-              </div>
-            ))
+              ))
           )}
         </div>
         <div className="cart-footer">

@@ -5,24 +5,46 @@ const WeightSelectionModal = ({ isOpen, onClose, product, onAddToCart }) => {
   const [weight, setWeight] = useState('');
   const [calculatedPrice, setCalculatedPrice] = useState(0);
   const [pricePer100g, setPricePer100g] = useState(0);
+  const [selectedWeightOption, setSelectedWeightOption] = useState(null);
 
   useEffect(() => {
     if (isOpen && product) {
       setWeight('');
       setCalculatedPrice(0);
       setPricePer100g(product.price / 100);
+      setSelectedWeightOption(null);
+      
+      // Если есть weightOptions, выберем первый по умолчанию
+      if (product.weightOptions && product.weightOptions.length > 0) {
+        setWeight(product.weightOptions[0]);
+        const grams = parseInt(product.weightOptions[0]);
+        const price = (grams / 100) * product.price;
+        setCalculatedPrice(price);
+        setSelectedWeightOption(product.weightOptions[0]);
+      }
     }
   }, [isOpen, product]);
 
   const handleWeightChange = (e) => {
     const value = e.target.value;
     setWeight(value);
+    setSelectedWeightOption(null);
     if (value && product) {
       const grams = parseInt(value);
       const price = (grams / 100) * product.price;
       setCalculatedPrice(price);
     } else {
       setCalculatedPrice(0);
+    }
+  };
+
+  const handleWeightOptionClick = (weightOption) => {
+    setWeight(weightOption);
+    setSelectedWeightOption(weightOption);
+    if (product) {
+      const grams = parseInt(weightOption);
+      const price = (grams / 100) * product.price;
+      setCalculatedPrice(price);
     }
   };
 
@@ -71,6 +93,26 @@ const WeightSelectionModal = ({ isOpen, onClose, product, onAddToCart }) => {
               min="1"
               required
             />
+            
+            {/* Кнопки с предустановленными весами */}
+            {product.weightOptions && product.weightOptions.length > 0 && (
+              <div className="weight-options-buttons">
+                <p className="hint">Быстрый выбор:</p>
+                <div className="weight-buttons-grid">
+                  {product.weightOptions.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      className={`weight-option-btn ${selectedWeightOption === option ? 'selected' : ''}`}
+                      onClick={() => handleWeightOptionClick(option)}
+                    >
+                      {option} г
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <div className="weight-hint">
               <p>💡 Введите желаемое количество граммов</p>
             </div>
